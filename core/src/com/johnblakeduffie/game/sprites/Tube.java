@@ -8,100 +8,143 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Tube {
-    private Texture leftTube , rightTube;
-    private Vector2 posLeftTube, posRightTube;
-    private Rectangle boundsLeft, boundsRight;
+    private Texture leftAsteroid , rightAsteroid;
+    public Vector2 posLeftAsteroid, posRightAsteroid;
     private float yTop = 1600;
-    Random rand = new Random();
-    private int tubeRandInt;
+    public int AsteroidRandInt;
+    public int Asteroid_X, Asteroid_2_X;
+    public int AsteroidSpeed = 3;
     public AtomicInteger score = new AtomicInteger();
+    private int asteroidSpeed = 5;
+    private int levelInt = 0;
 
     public Tube(float y) {
-        leftTube = new Texture("bird.png");
-        rightTube = new Texture("bird.png");
-        posLeftTube = new Vector2(-300, yTop);
-        posRightTube = new Vector2(350, yTop);
+        leftAsteroid = new Texture("JetpackJack_Asteroid_1.png");
+        rightAsteroid = new Texture("JetpackJack_Asteroid_2.png");
+        posLeftAsteroid = new Vector2(Asteroid_X, yTop);
+        posRightAsteroid = new Vector2(Asteroid_2_X, yTop);
+        //posLeftAsteroid = new Vector2(50, yTop);
+        //posRightAsteroid = new Vector2(800, yTop);
 
-        boundsLeft = new Rectangle(posLeftTube.x, posLeftTube.y, leftTube.getWidth(), leftTube.getHeight());
-        boundsRight = new Rectangle(posRightTube.x, posRightTube.y, rightTube.getWidth(), rightTube.getHeight());
-    }
-    
-
-    public Texture getLeftTube() {
-        return leftTube;
     }
 
-    public Texture getRightTube() {
-        return rightTube;
+
+    public Texture getLeftAsteroid() {
+        return leftAsteroid;
     }
+
+    public Texture getRightAsteroid() {
+        return rightAsteroid;
+    }
+
 
     public String getScore() {
         return String.valueOf(score.intValue());
     }
 
 
-    public Vector2 getPosLeftTube() {
-        posLeftTube.y = computeYPos(posLeftTube.y);
-        return posLeftTube;
+    public Vector2 getPosLeftAsteroid() {
+        posLeftAsteroid.y = computeYPos(posLeftAsteroid.y);
+        return posLeftAsteroid;
     }
 
-    public Vector2 getPosRightTube() {
-        posRightTube.y = computeYPos(posRightTube.y);
-            return posRightTube;
+    public Vector2 getPosRightAsteroid() {
+        posRightAsteroid.y = computeYPos(posRightAsteroid.y);
+        return posRightAsteroid;
+    }
+
+
+    public float computeYPos(float y) {
+        //if levelInt is a multiple of 25, then increase the asteroidSpeed by the multiple of 25
+
+        if (levelInt % 25 == 0)
+        {
+            asteroidSpeed += levelInt/25 ;
         }
 
-    private float computeYPos(float y) {
-        float newY = y - 5;
+        float newY = y - asteroidSpeed;
+
+
         if (newY <= 0) {
             newY = yTop;
-            changeTubeGap();
+
+          levelInt ++;
+
+            changeAsteroid();
+
+            AsteroidRandInt = 1 + (int)(Math.random() * 6);
+
             score.incrementAndGet();
         }
         return newY;
 
     }
 
-    public void changeTubeGap() {
+    public void changeAsteroid() {
 
 
-        tubeRandInt = 1 + (int)(Math.random() * 3);
+            if (AsteroidRandInt == 1) {
 
-            if (tubeRandInt == 1) {
-
-                posLeftTube = new Vector2(-300, yTop);   //LEFT GAP
-                posRightTube = new Vector2(350, yTop);
-                boundsLeft.setPosition(posLeftTube.x, posLeftTube.y);
-                boundsRight.setPosition(posRightTube.x, posRightTube.y);
-                tubeRandInt = 1 + (int)(Math.random() * 3);
+                Asteroid_X = 100;
+                Asteroid_2_X = 500;
+                leftAsteroid = new Texture ("JetpackJack_Asteroid_2.png");
+                rightAsteroid = new Texture ("JetpackJack_Asteroid_3and4.png");
 
 
-            } else if (tubeRandInt == 2) {                //RIGHT GAP
-                posLeftTube = new Vector2(100, yTop);
-                posRightTube = new Vector2(750, yTop);
-                boundsLeft.setPosition(posLeftTube.x, posLeftTube.y);
-                boundsRight.setPosition(posRightTube.x, posRightTube.y);
-                tubeRandInt = 1 + (int)(Math.random() * 3);
+
+            } else if (AsteroidRandInt == 2) {
+
+                Asteroid_X = 200;
+                Asteroid_2_X = 600;
+                leftAsteroid = new Texture ("JetpackJack_Asteroid_2.png");
+                rightAsteroid = new Texture ("JetpackJack_Asteroid_2.png");
 
 
-            } else if (tubeRandInt == 3) {
-                posLeftTube = new Vector2(-150, yTop);   //MIDDLE GAP
-                posRightTube = new Vector2(500, yTop);
-                boundsLeft.setPosition(posLeftTube.x, posLeftTube.y);
-                boundsRight.setPosition(posRightTube.x, posRightTube.y);
-                tubeRandInt = 1 + (int)(Math.random() * 3);
+
+            } else if (AsteroidRandInt == 3) {
+
+                Asteroid_X = 200;
+                Asteroid_2_X = 670;
+                leftAsteroid = new Texture ("JetpackJack_Asteroid_2.png");
+                rightAsteroid = new Texture ("JetpackJack_Asteroid_1.png");
+
+
+
+            } else if (AsteroidRandInt == 4) {
+
+                Asteroid_X = 60;
+                Asteroid_2_X = 700;
+                leftAsteroid = new Texture ("JetpackJack_Asteroid_2.png");
+                rightAsteroid = new Texture ("JetpackJack_Asteroid_3and4.png");
+
+
+
+            } else if (AsteroidRandInt == 5) {
+
+                Asteroid_X = 0;
+                Asteroid_2_X = 500;
+                leftAsteroid = new Texture ("JetpackJack_Asteroid_2.png");
+                rightAsteroid = new Texture ("JetpackJack_Asteroid_2.png");
+
+
+            } else if (AsteroidRandInt == 6) {
+
+                Asteroid_X = 100;
+                Asteroid_2_X = 800;
+                leftAsteroid = new Texture ("JetpackJack_Asteroid_2.png");
+                rightAsteroid = new Texture ("JetpackJack_Asteroid_2.png");
+
+
 
             }
 
 
-    }
-
-    public boolean collides(Rectangle rectangle){
-        return rectangle.overlaps(boundsLeft) || rectangle.overlaps(boundsRight);
     }
 
 

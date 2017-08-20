@@ -1,22 +1,22 @@
 package com.johnblakeduffie.game.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.johnblakeduffie.game.FlappyDemo;
-
+import com.badlogic.gdx.graphics.Color;
 
 /**
- * Created by johnblakeduffie on 7/15/17.
+ * Created by johnblakeduffie on 8/14/17.
  */
 
-public class MenuState extends State{
-    //cam.setToOrtho(false, FlappyDemo.WIDTH * 2, FlappyDemo.HEIGHT * 2);
+
+public class GameOverState extends State{
     private Texture background;
     private Texture playBtn;
-    public MenuState(GameStateManager gsm) {
+    public GameOverState(GameStateManager gsm) {
         super(gsm);
-        background = new Texture("JetpackJackmenuScreen.png");
+        //background = new Texture("menuScreen.png");
         playBtn = new Texture("playBtn.png");
     }
 
@@ -35,16 +35,17 @@ public class MenuState extends State{
 
     @Override
     public void render(SpriteBatch sb) {
-        //sb.setProjectionMatrix(cam.combined);
         sb.begin();
-        sb.draw(background, -70, -50, 580, 880);
-        //sb.draw(playBtn,  (FlappyDemo.WIDTH / 2) - (playBtn.getWidth() / 2), FlappyDemo.HEIGHT / 3);
+        //sb.draw(background, -520,-50, 1050, 850);
+        Gdx.gl.glClearColor(.135f, .206f, .235f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        sb.draw(playBtn, 380, 800);
         sb.end();
     }
 
     @Override
     public void dispose(){
-        background.dispose();
+        //background.dispose();
         playBtn.dispose();
     }
 }
