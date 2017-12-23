@@ -28,7 +28,7 @@ public class GameOverState extends State{
     private Vector2 posPlayerGameOver;
     public int opacityValue;
     public Matrix4 textRotation;
-    public int highScore;
+    private int highScore;
     BitmapFont font;
 
     public GameOverState(GameStateManager gsm) {
