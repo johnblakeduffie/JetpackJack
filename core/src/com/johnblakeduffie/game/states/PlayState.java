@@ -3,6 +3,7 @@ package com.johnblakeduffie.game.states;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -62,15 +63,17 @@ public class PlayState extends State {
     private Texture shootButton, shootButtonDown;
     private boolean shootButtonPressed;
     private Texture redLazer;
+    private int highScore;
+    private int weaponInt;
     public double newScore = 0;
     //private Rectangle ButtonLeft;
     private float gravity;
     private Tube tube;
     private Texture greenSquare;
-    public boolean playerJumping;
 
-    private Texture jackFalling;
-    private Texture jackJumping;
+    private Texture redJack;
+    private Texture purpleJack;
+    private Texture goldJack;
 
     Music playStateMusic;
     BitmapFont font;
@@ -109,10 +112,27 @@ public class PlayState extends State {
         progressBar.setSize(2000, 1900);
         progressBar.setPosition(50,50);
 
-        jackFalling = new Texture("JetpackJackCharacter_Gold.png");
-        jackJumping = new Texture("JetpackJackCharacter_flying_Gold.png");
+        //Get highscore from save file
+        Preferences prefs = Gdx.app.getPreferences("JetpackJack");
+        this.highScore = prefs.getInteger("highscore", 0);
 
-        player = new Sprite(jackFalling);
+        redJack = new Texture("JetpackJackCharacter_flying_Red.png");
+        purpleJack = new Texture("JetpackJackCharacter_flying_Purple.png");
+        goldJack = new Texture("JetpackJackCharacter_flying_Gold.png");
+
+
+        //Check to see which Jack Texture to use with the highscore the user has
+        if (highScore < 10) {
+            player = new Sprite(redJack);
+        }
+        if (highScore > 10 && highScore < 20){
+            player = new Sprite(purpleJack);
+        }
+        if (highScore > 20){
+            player = new Sprite(goldJack);
+        }
+
+
         player.setRotation(75);
         player.setPosition(-270, 550);
         player.setSize(200, 250);
@@ -132,6 +152,8 @@ public class PlayState extends State {
 
 
 
+
+
     }
 
 
@@ -147,26 +169,27 @@ public class PlayState extends State {
                 gravity = -55f;
                 player.translateX(gravity);
                 gravity = -10f;
-                playerJumping = true;
+                //playerJumping = true;
             } else if (!Gdx.input.justTouched()) {
                 player.translateX(gravity);
                 gravity += .6f;
-                playerJumping = false;
+                //playerJumping = false;
 
             }
 
 
         }
 
-        if (Gdx.input.getX() > 300 && Gdx.input.getX() < 450 && Gdx.input.getY() > 650 && Gdx.input.getY() < 760){
-            if (Gdx.input.justTouched()) {
+        if (Gdx.input.isTouched()){
+            if (Gdx.input.getX() > 300 && Gdx.input.getX() < 450 && Gdx.input.getY() > 650 && Gdx.input.getY() < 760) {
                 shootButtonPressed = true;
                 tube.changeAsteroid();
 
+            }
 
-            }else {
-                    shootButtonPressed = false;
-                }
+            else {
+                shootButtonPressed = false;
+            }
 
         }
 
@@ -211,15 +234,12 @@ public class PlayState extends State {
 
         //DRAW PLAYER
         player.draw(sb);
-        if (playerJumping) {
-            player.setTexture(jackJumping);
-        }
 
         //BUTTONS TO SHOOT
         sb.draw(shootButton, 580, 30, 350, 350);
 
         //PLAYER COLLISION BOUNDARY
-        playerBounds = new Rectangle(player.getX() + 650, player.getY(), player.getWidth(), player.getHeight() -200);
+        playerBounds = new Rectangle(player.getX() + 650, player.getY() - 50, player.getWidth(), player.getHeight() -200);
 
         //DRAW THE LAZERS
         Lazer.setPosition(player.getX() + 688, 620);
@@ -281,7 +301,7 @@ public class PlayState extends State {
         if (playerBounds.overlaps(AsteroidBounds) || player.getX() >= 900 || player.getX() <= -650) {
 
             GameOver();
-            //font.draw(tube.getScore());
+            //font.draw(Integer.toString(tube.getScore()));
 
         }
 
